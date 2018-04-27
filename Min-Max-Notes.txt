@@ -1,0 +1,28 @@
+Min Max Algo in TicTacToe
+
+if s is terminal : return utility(s)
+if s is max_node: return max_value(s)
+if s is min_mode: return min_value(s)
+
+
+*terminal : someone won / draw
+
+max_value():
+    m = neg-infinity
+    a,s' = result(s,a)
+    for a, s' in successor(s)
+        v = value(s')
+        m = max(m,v)
+    return m
+
+
+min_value():
+    m = pos-infinity
+    a,s' = result(s,a)
+    for a, s' in successor(s)
+        v = value(s')
+        m = min(m,v)
+    return m
+
+max - x
+min - o
