@@ -10,26 +10,25 @@ public class Game {
     public static int ROWS;
     public static int COLS;
 
-    private JFrame frame;
-    private JFrame solve;
-    private JButton buttons[][];
-    private JButton solveButtons[][];
-
-    private int action = 0;
-
-    private HashMap<String, ImageIcon> iconMap = new HashMap<String, ImageIcon>();
-
-    private String direction;
+    public JFrame frame;
+    public JButton buttons[][];
+    public Board tictactoe;
+    public int action = 0;
 
     public Game() {
         ROWS = 3;
         COLS = ROWS;
+        tictactoe = new Board();
         this.initializeUI();
     }
  
  
 // ceate hashmap if tile -> specific icon
     public void initializeUI() {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Who will play first? (1) Computer (2) Human?: ");
+        action = sc.nextInt();
+    
         frame = new JFrame("Sokoban");
 
         buttons = new JButton[Game.ROWS][Game.COLS];
@@ -49,11 +48,12 @@ public class Game {
                     public void actionPerformed(ActionEvent e)
                     {
                         if(action%2 == 0){
-                            button.setBackground(Color.PINK);
+                            button.setBackground(Color.GRAY);
                             button.setEnabled(false);
                         }
-                        else{
-                            button.setBackground(Color.GRAY);
+                        else{ //user
+                            tictactoe.usersTurn(i,j);
+                            button.setBackground(Color.PINK);
                             button.setEnabled(false);
                         }
                         action ++;
