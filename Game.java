@@ -14,6 +14,8 @@ public class Game {
     public JButton buttons[][];
     public Board tictactoe;
     public int action = 0;
+    public int i = 0;
+    public int j = 0;
 
     public Game() {
         ROWS = 3;
@@ -28,6 +30,8 @@ public class Game {
         Scanner sc = new Scanner(System.in);
         System.out.println("Who will play first? (1) Computer (2) Human?: ");
         action = sc.nextInt();
+
+        Random r = new Random();
     
         frame = new JFrame("Sokoban");
 
@@ -37,32 +41,45 @@ public class Game {
         JPanel panel = new JPanel(new GridLayout(ROWS, COLS));
         pane.add(panel);
 
-        for (int i = 0; i < Game.ROWS; i++) {
-            for (int j = 0; j < Game.COLS; j++) {
+        for (i = 0; i < Game.ROWS; i++) {
+            for (j = 0; j < Game.COLS; j++) {
                 JButton button = new JButton();
                 button.setFocusable(false);
                 button.setPreferredSize(new Dimension(100, 100)); //tile size
                 
+                final int rowIndex = i;
+                final int columnIndex = j;
                 button.addActionListener(new ActionListener()
                 {
                     public void actionPerformed(ActionEvent e)
-                    {
-                        if(action%2 == 0){
-                            button.setBackground(Color.GRAY);
-                            button.setEnabled(false);
-                        }
-                        else{ //user
-                            tictactoe.usersTurn(i,j);
+                    {                        
+                        if(!tictactoe.isGameOver()){
+                            tictactoe.usersTurn(rowIndex,columnIndex);
                             button.setBackground(Color.PINK);
                             button.setEnabled(false);
+                            if(!tictactoe.isGameOver()){
+                                tictactoe.performMiniMax(0,1);
+                                tictactoe.emulateTurn(tictactoe.aiMove.x, tictactoe.aiMove.y, 1);
+                                tictactoe.printBoard();
+                                buttons[tictactoe.aiMove.x][tictactoe.aiMove.y].setBackground(Color.GRAY);
+                                buttons[tictactoe.aiMove.x][tictactoe.aiMove.y].setEnabled(false);
+                            }
                         }
-                        action ++;
                     }
                     });
                 panel.add(button);
 
                 buttons[i][j] = button;
             }
+        }
+        if(action == 1){
+            int x = r.nextInt(3);
+            int y = r.nextInt(3);
+            tictactoe.emulateTurn(x, y, 1);
+            tictactoe.printBoard();
+            buttons[x][y].setBackground(Color.GRAY);
+            buttons[x][y].setEnabled(false);
+            action++;
         }
 
         frame.setResizable(false);
