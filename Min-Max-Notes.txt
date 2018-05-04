@@ -26,3 +26,24 @@ min_value():
 
 max - x
 min - o
+
+
+
+alpha-beta pruning 
+
+maxval(s,alpha,beta)
+    v = - inf
+    for a, s' in successors(s):
+        v = max(v,values(s',alpha,beta)
+        if(v>= beta) return v
+        alpha = max(alpha,v)
+    return v
+
+maxval(s,alpha,beta)
+    v = + inf
+    for a, s' in successors(s):
+        v = min(v,values(s',alpha,beta)
+        if(v<= beta) return v
+        beta = max(alpha,v)
+    return v
+
