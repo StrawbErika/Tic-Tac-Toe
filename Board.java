@@ -2,16 +2,22 @@ import java.util.ArrayList;
 import java.util.List;
 import java.awt.Point;
 import java.util.Scanner;
+import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.List;
+import java.util.stream.Collectors;
 
 // 1 => X (Computer)
 // 2 => O (Human)
 
 class Board {
 
-  ArrayList<Point> emptySpots;
-  Scanner sc = new Scanner(System.in);
   int[][] board;
-  Point aiMove;// agent's move 
+  HashMap<Point,Integer> nodeScores;
 
   public Board(){
     this.board = new int[3][3]; 
@@ -54,13 +60,27 @@ class Board {
 
   //looks for spots/positions on the board that was not yet marked
   public ArrayList<Point> getPossibleStates(){
-    emptySpots = new ArrayList<Point>();
+    
+    ArrayList<Point> emptySpots = new ArrayList<Point>();
     for(int i = 0; i < 3; i++){
       for( int j = 0; j< 3; j++){
         if( board[i][j] == 0) emptySpots.add(new Point(i,j));
       }
     }
     return emptySpots;
+  }
+
+
+  public Point getBestMove(){
+    Point bestPoint = new Point();
+    int max = Integer.MIN_VALUE;
+    for( Point point : nodeScores.keySet()){
+      if(max < nodeScores.get(point)){
+        max = nodeScores.get(point);
+        bestPoint = point;
+      }
+    }
+    return bestPoint;
   }
 
   //put the move on the board
@@ -71,6 +91,7 @@ class Board {
   //asks for human's move then simulate the move
   public void usersTurn(int r, int c){
     emulateTurn(r,c,2);
+    printBoard();
   }
 
   public void printBoard(){
@@ -90,42 +111,32 @@ class Board {
     }
   }
 
-  public int performMiniMax( int depth, int whoseTurn){
-    int value = 0, max = Integer.MIN_VALUE, min = Integer.MAX_VALUE;
-
+  public int getScore(ArrayList<Integer> scores, String type){
+    Collections.sort(scores); 
+    return type == "max"?  scores.get(scores.size()-1): scores.get(0);
+  }
+  public int performMiniMax( int depth, int whoseTurn){    
+    ArrayList<Integer> scores = new ArrayList<Integer>();
     //solves for the utility value
-    if( whoseTurn == 1 && whoWon() == 1) return 10; // 1 => X
-    else if ( whoseTurn == 2 && whoWon() == 2) return -10; // 2 => O
+ 
+    if( whoseTurn == 1 && whoWon() == 1) return +1; // 1 => X
+    else if ( whoseTurn == 2 && whoWon() == 2) return -1; // 2 => O
     else if ( getPossibleStates().size() == 0) return 0;
 
     for( int i = 0; i < getPossibleStates().size(); i++){
       Point point = getPossibleStates().get(i);
+
       if(whoseTurn == 1){ // gets the max value
-        emulateTurn(point.x,point.y,1);
-        int score = performMiniMax(depth+1, 2);
-        max = score > max ? score : max;
-
-        if( (score >= 0 && depth == 0) || (i == getPossibleStates().size()-1 && max < 0 && depth == 0)) aiMove = point;
-        else if ( score == 1){
-          board[point.x][point.y] = 0;
-          break;
-        }
+          emulateTurn(point.x,point.y,1);
+          int score = performMiniMax(depth+1, 2);
+          scores.add(score);
+          if(depth == 0 ) nodeScores.put(point,score);
       }else if( whoseTurn == 2){ //gets the min value
-
-        emulateTurn(point.x,point.y,2);
-        int score = performMiniMax(depth + 1, 1);
-        min = score < min ? score:min;
-        if( min == -1 ){
-          board[point.x][point.y] = 0;
-          break;
-        }
+          emulateTurn(point.x,point.y,2);
+          scores.add(performMiniMax(depth + 1, 1));
       }
-      //reset position
-      board[point.x][point.y] =0;
+      board[point.x][point.y] = 0;
     }
-
-    //if agent/computer, return max. otherwise, return min value
-    if( whoseTurn == 1) return max;
-    return min;
+    return whoseTurn == 1? getScore(scores,"max"): getScore(scores,"min");
   }
 }
