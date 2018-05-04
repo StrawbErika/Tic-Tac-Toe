@@ -15,6 +15,7 @@ max_value():
         m = max(m,v)
     return m
 
+wwwww
 
 min_value():
     m = pos-infinity

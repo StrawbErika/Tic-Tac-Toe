@@ -71,7 +71,6 @@ class Board {
   //asks for human's move then simulate the move
   public void usersTurn(int r, int c){
     emulateTurn(r,c,2);
-    printBoard();
   }
 
   public void printBoard(){

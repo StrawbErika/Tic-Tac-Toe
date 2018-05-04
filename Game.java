@@ -60,9 +60,11 @@ public class Game {
                             if(!tictactoe.isGameOver()){
                                 tictactoe.performMiniMax(0,1);
                                 tictactoe.emulateTurn(tictactoe.aiMove.x, tictactoe.aiMove.y, 1);
-                                tictactoe.printBoard();
                                 buttons[tictactoe.aiMove.x][tictactoe.aiMove.y].setBackground(Color.GRAY);
                                 buttons[tictactoe.aiMove.x][tictactoe.aiMove.y].setEnabled(false);
+                            }
+                            if(tictactoe.isGameOver()){
+                                JOptionPane.showMessageDialog(frame, "Game Over!");
                             }
                         }
                     }
@@ -76,7 +78,6 @@ public class Game {
             int x = r.nextInt(3);
             int y = r.nextInt(3);
             tictactoe.emulateTurn(x, y, 1);
-            tictactoe.printBoard();
             buttons[x][y].setBackground(Color.GRAY);
             buttons[x][y].setEnabled(false);
             action++;
