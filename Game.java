@@ -75,11 +75,10 @@ public class Game {
             }
         }
         if(action == 1){
-            int x = r.nextInt(3);
-            int y = r.nextInt(3);
-            tictactoe.emulateTurn(x, y, 1);
-            buttons[x][y].setBackground(Color.GRAY);
-            buttons[x][y].setEnabled(false);
+            tictactoe.emulateTurn(1, 1, 1);
+            tictactoe.printBoard();
+            buttons[1][1].setBackground(Color.GRAY);
+            buttons[1][1].setEnabled(false);
             action++;
         }
 
